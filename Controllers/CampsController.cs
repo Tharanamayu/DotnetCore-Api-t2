@@ -74,6 +74,11 @@ namespace CoreCodeCamp.Controllers
         {
             try
             {
+                var existing = await _repository.GetCampAsync(model.Moniker);
+                if(existing != null)
+                {
+                    return BadRequest("Moniker in use");
+                }
                 var location = _linkGenerator.GetPathByAction("Get", "Camps", new { moniker = model.Moniker });
 
                 if (string.IsNullOrWhiteSpace(location))
@@ -95,6 +100,25 @@ namespace CoreCodeCamp.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Databse error");
             }
             return BadRequest();
+        }
+        [HttpPut]
+        public async Task<ActionResult<CampModel>> Put(CampModel model,string moniker)
+        {
+            try
+            {
+                var oldCamp = await _repository.GetCampAsync(moniker);
+                if (oldCamp == null) return NotFound($"Couldn't find camp with moniker of {moniker}");
+                _mapper.Map(model, oldCamp);
+                if(await _repository.SaveChangesAsync())
+                {
+                    return _mapper.Map<CampModel>(oldCamp);
+                }
+            }
+            catch (Exception)
+            {
+
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Databse error");
+            }
         }
     }
 }
