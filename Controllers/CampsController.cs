@@ -23,13 +23,13 @@ namespace CoreCodeCamp.Controllers
         //simple GET method ,it returns object
         [HttpGet]
         //added return with status code.
-        public async Task<IActionResult> Get()//need to change method to async method
+        public async Task<ActionResult<CampModel[]>> Get()//need to change method to async method
         {   //added try catch block
             try 
             {
                 var results = await _repository.GetAllCampsAsync();//used async method in the repository
-                CampModel[] models = _mapper.Map<CampModel[]>(results);//results map to CampModel
-                return Ok(models);
+                
+                return _mapper.Map<CampModel[]>(results);//results map to CampModel
             } catch (Exception)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");//added exception status code with meaningful exception
