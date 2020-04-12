@@ -1,4 +1,5 @@
 ﻿using CoreCodeCamp.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -18,10 +19,17 @@ namespace CoreCodeCamp.Controllers
         [HttpGet]
         //added return with status code.
         public async Task<IActionResult> Get()//need to change method to async method
-        {
-            var results = await _repository.GetAllCampsAsync();//used async method in the repository
+        {   //added try catch block
+            try 
+            {
+                var results = await _repository.GetAllCampsAsync();//used async method in the repository
 
-            return Ok (results);
+                return Ok(results);
+            } catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");//added exception status code with meaningful exception
+            }
+            
         }
     }
 }
