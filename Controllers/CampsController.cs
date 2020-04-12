@@ -9,9 +9,11 @@ namespace CoreCodeCamp.Controllers
     public class CampsController: ControllerBase
     {   
         //simple GET method ,it returns object
-        public object Get()
+        [HttpGet]
+        //added return with status code
+        public IActionResult Get()
         {
-            return new { Moniker = "AJK2019", name = "Atlantic" };
+            return Ok (new { Moniker = "AJK2019", name = "Atlantic" });
         }
     }
 }
