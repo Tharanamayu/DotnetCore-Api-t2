@@ -3,6 +3,7 @@ using CoreCodeCamp.Data;
 using CoreCodeCamp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,12 @@ namespace CoreCodeCamp.Controllers
         private readonly ICampRepository _repository;
         //get the instance of AutoMapper
         private readonly IMapper _mapper;
-        public CampsController(ICampRepository repository,IMapper mapper)
+        private readonly LinkGenerator _linkGenerator;
+        public CampsController(ICampRepository repository,IMapper mapper,LinkGenerator linkGenerator)
         {
             _repository = repository;
             _mapper = mapper;
+            _linkGenerator = linkGenerator;
         }
         //simple GET method ,it returns object
         [HttpGet]
@@ -65,6 +68,33 @@ namespace CoreCodeCamp.Controllers
 
                 return this.StatusCode(StatusCodes.Status500InternalServerError,"Databse error");
             }
+        }
+       // [HttpPost]
+        public async Task<ActionResult<CampModel>> Post(CampModel model)
+        {
+            try
+            {
+                var location = _linkGenerator.GetPathByAction("Get", "Camps", new { moniker = model.Moniker });
+
+                if (string.IsNullOrWhiteSpace(location))
+                {
+                    return BadRequest("Could not usecurrent moniker");
+                }
+
+                //create a new campmodel
+                var camp = _mapper.Map<Camp>(model);
+                _repository.Add(camp);
+                if(await _repository.SaveChangesAsync())
+                {
+                    return Created($"/api/camps/{camp.Moniker}",_mapper.Map<Camp>(model));
+                }
+            }
+            catch (Exception)
+            {
+
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Databse error");
+            }
+            return BadRequest();
         }
     }
 }
