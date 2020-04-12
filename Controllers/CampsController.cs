@@ -16,7 +16,7 @@ namespace CoreCodeCamp.Controllers
         }
         //simple GET method ,it returns object
         [HttpGet]
-        //added return with status code
+        //added return with status code.
         public IActionResult Get()
         {
             return Ok (new { Moniker = "AJK2019", name = "Atlantic" });
