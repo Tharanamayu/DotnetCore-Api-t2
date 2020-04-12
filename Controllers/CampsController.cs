@@ -119,6 +119,28 @@ namespace CoreCodeCamp.Controllers
 
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Databse error");
             }
+            return BadRequest();
+        }
+        [HttpDelete("{moniker}")]
+        public async Task<IActionResult> Delete(string moniker)
+        {
+            try
+            {
+                var oldCamp = await _repository.GetCampAsync(moniker);
+                if (oldCamp == null) return NotFound();
+
+                _repository.Delete(oldCamp);
+                if (await _repository.SaveChangesAsync())
+                {
+                    return Ok();
+                }
+            }
+            catch (Exception)
+            {
+
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Databse error");
+            }
+            return BadRequest();
         }
     }
 }
