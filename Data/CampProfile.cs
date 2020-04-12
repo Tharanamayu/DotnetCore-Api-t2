@@ -11,7 +11,8 @@ namespace CoreCodeCamp.Data
     {
         public CampProfile()
         {
-            this.CreateMap<Camp, CampModel>();//map camp entity to campModel
+            this.CreateMap<Camp, CampModel>()//map camp entity to campModel
+                .ForMember(c => c.Venue, o => o.MapFrom(m => m.Location.VenueName));//add location data(Vanue) to MapModel from the Location entity
         }
     }
 }
