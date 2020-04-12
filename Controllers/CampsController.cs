@@ -17,9 +17,11 @@ namespace CoreCodeCamp.Controllers
         //simple GET method ,it returns object
         [HttpGet]
         //added return with status code.
-        public IActionResult Get()
+        public async Task<IActionResult> Get()//need to change method to async method
         {
-            return Ok (new { Moniker = "AJK2019", name = "Atlantic" });
+            var results = await _repository.GetAllCampsAsync();//used async method in the repository
+
+            return Ok (results);
         }
     }
 }
