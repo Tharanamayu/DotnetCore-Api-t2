@@ -63,7 +63,13 @@ namespace CoreCodeCamp.Controllers
 
                 var talk = _mapper.Map<Talk>(model);
                 talk.Camp = camp;
+
+                if (model.speaker == null) return BadRequest("Speaker id is required");
+                var speaker = await _repository.GetSpeakerAsync(model.speaker.SpeakerId);
+                if (speaker == null) return BadRequest("Speaker couldn't be found");
+                talk.Speaker= speaker;
                 _repository.Add(talk);
+
 
                 if(await _repository.SaveChangesAsync())
                 {
