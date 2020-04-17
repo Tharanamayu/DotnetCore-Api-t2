@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace CoreCodeCamp.Controllers
 {   [Route("api/[controller]")]
     [ApiVersion("1.0")]
-    [ApiVersion("1.1")
+    [ApiVersion("1.1")]
     public class CampsController: ControllerBase
     {   //get the instance of repositiry
         private readonly ICampRepository _repository;
